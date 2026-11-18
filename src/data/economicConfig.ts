@@ -1,0 +1,275 @@
+import { BankProgramId } from '../types/business';
+
+export interface BankProgramConfig {
+  id: BankProgramId;
+  nameRu: string;
+  nameUz: string;
+  bankNamesRu: string;
+  bankNamesUz: string;
+  annualRatePercent: number;
+  rateRangeRu: string;
+  rateRangeUz: string;
+  graceRangeRu: string;
+  graceRangeUz: string;
+  minGraceMonths: number;
+  maxGraceMonths: number;
+  maxCap: number;
+  equityRequirement: number;
+  quotaPenaltyThresholdUzs: number;
+  maxTermMonths: number;
+  collateralInfoRu: string;
+  collateralInfoUz: string;
+  bestForRu: string;
+  bestForUz: string;
+}
+
+/**
+ * Единый конфигурационный файл экономических, налоговых и банковских нормативов
+ * Республики Узбекистан (НК РУз и актуальные профили 10 банков для предпринимателей).
+ */
+export const UZ_ECONOMIC_CONFIG = {
+  usdRateUzs: 12_850,
+  brvUzs: 375_000, // Базовая расчетная величина (БРВ / BHM)
+  cbuPolicyRatePercent: 13.5,
+  ratesVersion: '2026.11-CBU',
+  updateIntervalSeconds: 60,
+  tax: {
+    selfEmployedAnnualSocialUzs: 375_000, // 1 БРВ в год по ст. 408 НК РУз (~31 250 сум/мес)
+    selfEmployedMaxAnnualRevenueUzs: 100_000_000,
+    yattMaxAnnualRevenueUzs: 1_000_000_000,
+    yattMaxStaffCount: 5, // По законодательству РУз ЯТТ может нанимать до 5 сотрудников
+    turnoverTaxRate: 0.04, // Налог с оборота 4%
+    socialTaxRate: 0.12, // Социальный налог 12% с ФОТ
+    vatRate: 0.12, // НДС 12%
+    profitTaxRate: 0.15, // Налог на прибыль 15%
+    equipmentAmortizationAnnualRate: 0.2, // Амортизация оборудования 20%/год (вычет из базы прибыли)
+  },
+  opex: {
+    utilitiesAndMarketingShare: 0.06, // 6% от выручки на свет, воду, интернет и маркетинг
+  },
+  cashflowRampUpSchedule: [
+    0.65, 0.8, 0.95, 1.0, 1.0, 1.02, 1.04, 1.05, 1.06, 1.08, 1.09, 1.1,
+  ],
+  bankPrograms: [
+    {
+      id: 'preferential',
+      nameRu: 'Агро- и продовольственные программы МСБ',
+      nameUz: 'Agro va oziq-ovqat KO‘B dasturlari',
+      bankNamesRu: 'Агробанк',
+      bankNamesUz: 'Agrobank',
+      annualRatePercent: 16,
+      rateRangeRu: '18–24% (по агро-программам 6–18%)',
+      rateRangeUz: '18–24% (agro-dasturlarda 6–18%)',
+      graceRangeRu: '6–12 мес.',
+      graceRangeUz: '6–12 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 12,
+      maxCap: 86,
+      equityRequirement: 0.2,
+      quotaPenaltyThresholdUzs: 1_000_000_000,
+      maxTermMonths: 48,
+      collateralInfoRu: 'Залог оборудования, авто, недвижимости или поручительство Фонда (125%)',
+      collateralInfoUz: "Uskuna, avto, ko'chmas mulk garovi yoki Jamg'arma kafilligi (125%)",
+      bestForRu: 'Кофейни, пекарни, общепит, торговля продуктами и переработка',
+      bestForUz: 'Qahvaxona, novvoyxona, umumiy ovqatlanish va oziq-ovqat savdosi',
+    },
+    {
+      id: 'brb',
+      nameRu: 'Линия «Непрерывная поддержка малого бизнеса»',
+      nameUz: '«Kichik biznesni uzluksiz qo‘llab-quvvatlash» dasturi',
+      bankNamesRu: 'Банк развития бизнеса (BRB)',
+      bankNamesUz: 'Biznesni rivojlantirish banki (BRB)',
+      annualRatePercent: 19,
+      rateRangeRu: '11–28,5%',
+      rateRangeUz: '11–28,5%',
+      graceRangeRu: '6–12 мес.',
+      graceRangeUz: '6–12 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 12,
+      maxCap: 88,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 1_500_000_000,
+      maxTermMonths: 60,
+      collateralInfoRu: 'Госпоручительство Фонда до 50% + залог имущества / оборудования',
+      collateralInfoUz: "Jamg'arma davlat kafilligi 50% gacha + mulk/uskuna garovi",
+      bestForRu: 'Учебные центры, цеха, старт ЯТТ и расширение МЧЖ до 1.5 млрд сум',
+      bestForUz: "O'quv markazlari, sexlar, YaTT va 1.5 mlrd gacha MChJ loyihalari",
+    },
+    {
+      id: 'ipakyuli',
+      nameRu: 'Финансирование малого бизнеса и импорта (UZS/USD)',
+      nameUz: 'Kichik biznes va importni moliyalashtirish (UZS/USD)',
+      bankNamesRu: 'Ипак Йули Банк',
+      bankNamesUz: 'Ipak Yo‘li Banki',
+      annualRatePercent: 19.5,
+      rateRangeRu: '18–24% (в валюте от 10%)',
+      rateRangeUz: '18–24% (valyutada 10% dan)',
+      graceRangeRu: '6–12 мес.',
+      graceRangeUz: '6–12 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 12,
+      maxCap: 90,
+      equityRequirement: 0.2,
+      quotaPenaltyThresholdUzs: 2_000_000_000,
+      maxTermMonths: 48,
+      collateralInfoRu: 'Оборудование, автотранспорт, недвижимость или валютный эквивалент',
+      collateralInfoUz: 'Uskuna, avtotransport, mulk yoki valyuta liniyasi kafolati',
+      bestForRu: 'Ритейл, ПВЗ, закупка импортного оборудования и торговля',
+      bestForUz: 'Chakana savdo, PVZ, import uskunalari xaridi va xizmatlar',
+    },
+    {
+      id: 'aab',
+      nameRu: 'Бизнес-развитие и пополнение оборотных средств',
+      nameUz: 'Biznesni rivojlantirish va aylanma mablag‘lar krediti',
+      bankNamesRu: 'Asia Alliance Bank',
+      bankNamesUz: 'Asia Alliance Bank',
+      annualRatePercent: 20,
+      rateRangeRu: '18,5–24%',
+      rateRangeUz: '18,5–24%',
+      graceRangeRu: 'до 6 мес.',
+      graceRangeUz: '6 oygacha',
+      minGraceMonths: 0,
+      maxGraceMonths: 6,
+      maxCap: 89,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 2_000_000_000,
+      maxTermMonths: 48,
+      collateralInfoRu: 'Коммерческая недвижимость, транспорт или ликвидный залог 125%',
+      collateralInfoUz: "Tijorat ko'chmas mulki, transport yoki likvid garov (125%)",
+      bestForRu: 'Торговые сети, сфера услуг и действующие предприятия МЧЖ',
+      bestForUz: 'Savdo tarmoqlari, xizmat ko‘rsatish va faol MChJ korxonalari',
+    },
+    {
+      id: 'aloqa',
+      nameRu: 'Инвестиции, IT-услуги и длительный льготный старт',
+      nameUz: 'Investitsiya, IT-xizmatlar va uzoq imtiyozli start',
+      bankNamesRu: 'Aloqabank',
+      bankNamesUz: 'Aloqabank',
+      annualRatePercent: 20.5,
+      rateRangeRu: '19–25%',
+      rateRangeUz: '19–25%',
+      graceRangeRu: '6–24 мес.',
+      graceRangeUz: '6–24 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 24,
+      maxCap: 88,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 2_500_000_000,
+      maxTermMonths: 60,
+      collateralInfoRu: 'Залог оборудования, недвижимости + поддержка IT/молодежных проектов',
+      collateralInfoUz: "Uskuna va ko'chmas mulk garovi + yoshlar va IT loyihalar",
+      bestForRu: 'Долгая окупаемость и монтаж: льготный период до 24 мес. (учеба, цеха, сервис)',
+      bestForUz: 'Uzoq muddatli loyihalar: 24 oygacha imtiyozli davr (o‘quv, sex, servis)',
+    },
+    {
+      id: 'commercial',
+      nameRu: 'Коммерческая бизнес-линия и онлайн-кредитование',
+      nameUz: 'Tijorat biznes-liniyasi va onlayn kreditlash',
+      bankNamesRu: 'Капиталбанк',
+      bankNamesUz: 'Kapitalbank',
+      annualRatePercent: 21,
+      rateRangeRu: '18–26%',
+      rateRangeUz: '18–26%',
+      graceRangeRu: '3–12 мес.',
+      graceRangeUz: '3–12 oy',
+      minGraceMonths: 3,
+      maxGraceMonths: 12,
+      maxCap: 92,
+      equityRequirement: 0.15,
+      quotaPenaltyThresholdUzs: 2_000_000_000,
+      maxTermMonths: 48,
+      collateralInfoRu: 'Гибкий взнос от 15%, ускоренный скоринг по обороту счета',
+      collateralInfoUz: 'Moslashuvchan ulush (15% dan), hisobraqam aylanmasi bo‘yicha skoring',
+      bestForRu: 'Быстрый запуск при небольшом собственном капитале (от 15%)',
+      bestForUz: "Shaxsiy kapital ulushi kam (15% dan) bo'lganda tezkor start",
+    },
+    {
+      id: 'hamkor',
+      nameRu: 'Микро- и бизнес-финансирование для ИП/МЧЖ',
+      nameUz: 'YaTT va MChJ uchun biznes-moliyalashtirish',
+      bankNamesRu: 'Hamkorbank',
+      bankNamesUz: 'Hamkorbank',
+      annualRatePercent: 21.5,
+      rateRangeRu: '18–28%',
+      rateRangeUz: '18–28%',
+      graceRangeRu: '3–6 мес.',
+      graceRangeUz: '3–6 oy',
+      minGraceMonths: 3,
+      maxGraceMonths: 6,
+      maxCap: 89,
+      equityRequirement: 0.2,
+      quotaPenaltyThresholdUzs: 1_500_000_000,
+      maxTermMonths: 36,
+      collateralInfoRu: 'Поручительство, транспорт или недвижимость (125%)',
+      collateralInfoUz: "Kafillik, transport yoki ko'chmas mulk garovi (125%)",
+      bestForRu: 'Торговля, услуги, микрозаймы для ЯТТ по всему Узбекистану',
+      bestForUz: "O'zbekiston bo'ylab savdo, xizmat ko'rsatish va YaTT loyihalari",
+    },
+    {
+      id: 'trast',
+      nameRu: 'Бизнес-кредит на развитие и оборотный капитал',
+      nameUz: 'Rivojlanish va aylanma mablag‘lar uchun biznes-kredit',
+      bankNamesRu: 'Трастбанк',
+      bankNamesUz: 'Trastbank',
+      annualRatePercent: 22.5,
+      rateRangeRu: '21–26%',
+      rateRangeUz: '21–26%',
+      graceRangeRu: 'до 6 мес.',
+      graceRangeUz: '6 oygacha',
+      minGraceMonths: 0,
+      maxGraceMonths: 6,
+      maxCap: 88,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 2_000_000_000,
+      maxTermMonths: 36,
+      collateralInfoRu: 'Недвижимость, автотранспорт или депозитный залог (125%)',
+      collateralInfoUz: "Ko'chmas mulk, avtotransport yoki depozit garovi (125%)",
+      bestForRu: 'Стабильный городской сервис, салоны, аптеки, оптовая торговля',
+      bestForUz: 'Shahar xizmatlari, salonlar, dorixona va ulgurji savdo',
+    },
+    {
+      id: 'sqb',
+      nameRu: 'Инвестиционные линии и госпрограммы оборудования',
+      nameUz: 'Investitsiya liniyalari va uskuna bo‘yicha davlat dasturlari',
+      bankNamesRu: 'Узпромстройбанк (SQB)',
+      bankNamesUz: 'O‘zsanoatqurilishbank (SQB)',
+      annualRatePercent: 18,
+      rateRangeRu: '23–24% (по госпрограммам 8–12%)',
+      rateRangeUz: '23–24% (davlat dasturlarida 8–12%)',
+      graceRangeRu: '6–12 мес.',
+      graceRangeUz: '6–12 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 12,
+      maxCap: 90,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 3_500_000_000,
+      maxTermMonths: 60,
+      collateralInfoRu: 'Приобретаемое оборудование + коммерческая недвижимость / Фонд',
+      collateralInfoUz: "Sotib olinayotgan uskuna + tijorat mulki / Jamg'arma kafilligi",
+      bestForRu: 'Производственные цеха, медоборудование и крупные МЧЖ до 3.5 млрд',
+      bestForUz: 'Ishlab chiqarish sexlari, tibbiy uskuna va yirik MChJ (3.5 mlrd gacha)',
+    },
+    {
+      id: 'nbu',
+      nameRu: 'Длинные инвестиционные линии (HoReCa и услуги)',
+      nameUz: 'Uzoq muddatli investitsiya liniyasi (HoReCa va xizmatlar)',
+      bankNamesRu: 'Узнацбанк (NBU)',
+      bankNamesUz: 'O‘zmilliybank (NBU)',
+      annualRatePercent: 23,
+      rateRangeRu: 'от 23%',
+      rateRangeUz: '23% dan',
+      graceRangeRu: '6–24 мес.',
+      graceRangeUz: '6–24 oy',
+      minGraceMonths: 6,
+      maxGraceMonths: 24,
+      maxCap: 91,
+      equityRequirement: 0.25,
+      quotaPenaltyThresholdUzs: 5_000_000_000,
+      maxTermMonths: 60,
+      collateralInfoRu: 'Недвижимость, ликвидное оборудование и гарантии Фонда (125%)',
+      collateralInfoUz: "Ko'chmas mulk, likvid uskunalar va Jamg'arma kafolati (125%)",
+      bestForRu: 'Масштабные проекты до 5 млрд сум с длительным льготным периодом до 24 мес.',
+      bestForUz: '5 mlrd gacha yirik loyihalar va 24 oygacha uzoq imtiyozli davr',
+    },
+  ] as BankProgramConfig[],
+} as const;

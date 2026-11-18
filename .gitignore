@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*
+!.env.example
+server_data/
+*.tsbuildinfo
+test_*.mjs
+verify_*.mjs
